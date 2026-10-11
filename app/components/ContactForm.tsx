@@ -45,50 +45,58 @@ export default function ContactForm() {
     }
   }
 
-  const input = "mt-1 w-full rounded border border-gray-300 px-3 py-2";
+  const field =
+    "w-full border-0 border-b border-ink bg-transparent px-0 py-3 text-sm text-ink placeholder:text-ink focus:border-b-2 focus:outline-none";
 
   if (status === "done") {
     return (
-      <p className="rounded bg-green-50 p-4 text-green-800">
-        Thanks! Your message has been sent. We'll get back to you soon.
+      <p role="status" className="bg-ink p-6 text-sm text-brand">
+        Thanks! Your message has been sent. We’ll get back to you soon.
       </p>
     );
   }
 
   return (
-    <form onSubmit={onSubmit} className="max-w-xl space-y-4">
-      <div>
-        <label htmlFor="name" className="text-sm font-medium">Name</label>
-        <input id="name" name="name" required minLength={2} maxLength={120} className={input} />
+    <form onSubmit={onSubmit} className="mt-8 space-y-6">
+      <div className="grid gap-6 sm:grid-cols-2">
+        <div>
+          <label htmlFor="name" className="sr-only">Full name</label>
+          <input id="name" name="name" placeholder="Full name*" required minLength={2} maxLength={120} className={field} />
+        </div>
+        <div>
+          <label htmlFor="email" className="sr-only">Email address</label>
+          <input id="email" name="email" type="email" placeholder="Email address*" required maxLength={190} className={field} />
+        </div>
       </div>
+
       <div>
-        <label htmlFor="email" className="text-sm font-medium">Email</label>
-        <input id="email" name="email" type="email" required maxLength={190} className={input} />
+        <label htmlFor="phone" className="sr-only">Phone (optional)</label>
+        <input id="phone" name="phone" type="tel" placeholder="Phone (optional)" maxLength={30} className={field} />
       </div>
+
       <div>
-        <label htmlFor="phone" className="text-sm font-medium">Phone (optional)</label>
-        <input id="phone" name="phone" type="tel" maxLength={30} className={input} />
-      </div>
-      <div>
-        <label htmlFor="message" className="text-sm font-medium">Message</label>
-        <textarea id="message" name="message" required minLength={10} maxLength={3000} rows={5} className={input} />
+        <label htmlFor="message" className="sr-only">How can we help you</label>
+        <textarea id="message" name="message" placeholder="How can we help you?*" required minLength={10} maxLength={3000} rows={3} className={`${field} resize-none`} />
       </div>
 
       <Turnstile
         siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
         onSuccess={setToken}
         onExpire={() => setToken("")}
+        options={{ theme: "light" }}
       />
 
-      {status === "error" && <p className="text-sm text-red-600">{errorMsg}</p>}
+      {status === "error" && (
+        <p role="alert" className="text-sm font-semibold text-red-800">{errorMsg}</p>
+      )}
 
       <button
         type="submit"
         disabled={status === "sending"}
-        className="rounded bg-blue-600 px-5 py-3 text-white hover:bg-blue-700 disabled:opacity-50"
+        className="bg-ink px-8 py-4 text-[11px] font-bold uppercase tracking-wider text-white transition-colors hover:bg-white hover:text-ink disabled:opacity-50"
       >
         {status === "sending" ? "Sending..." : "Send message"}
       </button>
     </form>
   );
-}   
+}
