@@ -13,6 +13,7 @@ export const metadata: Metadata = {
 
 const IMG = "/images/placeholder.svg";
 
+
 const steps = [
   {
     label: "Step 1",
